@@ -1,0 +1,9 @@
+.sub-container {
+  width: auto;
+  border-radius: 0.5rem;
+  background-color: white;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

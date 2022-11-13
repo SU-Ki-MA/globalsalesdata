@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Generate Token</title>
+<link rel="stylesheet" href="{{url_for('static',filename='css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="main-container">
+
+  <div class="p-5 mt-3">
+    <iframe src="https://us1.ca.analytics.ibm.com/bi/?perspective=dashboard&amp;pathRef=.public_folders%2FDevelopment%2BPhase%2FGlobalSales%2BDash&amp;closeWindowOnLastView=true&amp;ui_appbar=false&amp;ui_navbar=false&amp;shareMode=embedded&amp;action=view&amp;mode=dashboard&amp;subView=model000001844c073244_00000000" width="1280" height="900" frameborder="0" gesture="media" allow="encrypted-media" allowfullscreen=""></iframe>
+  </div>
+  <div class="sub-container quote m-3">
+    <h3>Programmer Jokes API</h3>
+    <p id="joke">
+      
+    </p>
+  </div>
+</div>
+<script>
+  async function joke() {
+    await fetch("https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single", {
+      method: "GET",
+    }).then(async (res) => { 
+      let t= await res.json();
+      document.getElementById('joke').innerHTML=t.joke
+    }).catch((err) => { console.log(err) })
+  }
+  joke();
+</script>
+{% endblock %}

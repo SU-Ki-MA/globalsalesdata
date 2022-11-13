@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Generate Token</title>
+<link rel="stylesheet" href="{{url_for('static',filename='css/generatetoken.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="main-container">
+
+  <div class="sub-container p-5">
+    <h1>Generate Token</h1>
+    <div class="input-cont">
+      <input class="form-control input-tf shadow-none" type="text" value="" aria-label="tokenid" id="tokenid"
+        readonly>
+      <button type="submit" class="btn btn-dark butt2 shadow-none" data-bs-container="body" data-bs-toggle="popover"
+        data-bs-placement="right" data-bs-content="Copied" onclick="copyfn()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clipboard" width="36" height="36" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+          <path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" />
+          <rect x="9" y="3" width="6" height="4" rx="2" />
+        </svg>
+      </button>
+    </div>
+    <div class="generate-btn-group mt-1">
+      <button type="button" class="btn btn-dark butt shadow-none" onclick="generate()">Generate</button>
+      <a href="{{deploy_url}}/activateacc" class="link-text mt-0">already have a token?</a>
+    </div>
+  </div>
+
+</div>
+<script>
+  function copyfn() {
+    var copyText = document.getElementById("tokenid");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+    navigator.clipboard.writeText(copyText.value);
+  }
+  async function generate() {
+    await fetch("{{deploy_url}}" + "/generatetoken", {
+      method: "POST",
+    }).then(async (res) => { 
+      let t= await res.json();
+      document.getElementById('tokenid').value=t.token_id
+    }).catch((err) => { console.log(err) })
+  }
+</script>
+
+{% endblock %}

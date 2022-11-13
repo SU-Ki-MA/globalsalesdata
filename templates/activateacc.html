@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Activate Account</title>
+<link rel="stylesheet" href="{{url_for('static',filename='css/activateacc.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="main-container">
+  <form action="{{deploy_url}}/activateacc" method="post">
+    <div class="sub-container p-5">
+      <h1>Activate Account</h1>
+      <div class="input-cont">
+        <input class="form-control input-tf shadow-none" type="text" value="" aria-label="tokenid" id="tokenid"
+        name="tokenid"
+          placeholder="Token">
+      </div>
+      <div class="generate-btn-group mt-1">
+        <button type="submit" class="btn btn-dark butt shadow-none">Activate</button>
+        <a href="{{deploy_url}}/generatetoken" class="link-text mt-0">don't have a token?</a>
+      </div>
+    </div>
+  </form>
+  <script>
+    async function pastefn(input) {
+      const text = await navigator.clipboard.readText();
+      document.getElementById('tokenid').value = text;
+    }
+  </script>
+  {% endblock %}

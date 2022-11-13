@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Machine Learning</title>
+<link rel="stylesheet" href="{{url_for('static',filename='css/ml.css')}}">
+{% endblock %}
+
+{% block body %}
+<div class="main-container">
+  <div class="sub-container quote m-3">
+    <h3>Programmer Jokes API</h3>
+    <p id="joke">
+      
+    </p>
+  </div>
+</div>
+<script>
+  async function joke() {
+    await fetch("https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single", {
+      method: "GET",
+    }).then(async (res) => { 
+      let t= await res.json();
+      document.getElementById('joke').innerHTML=t.joke
+    }).catch((err) => { console.log(err) })
+  }
+  joke();
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{{url_for('static',filename='img/favicon.ico')}}" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/css/bootstrap.min.css"
+    integrity="sha512-XWTTruHZEYJsxV3W/lSXG1n3Q39YIWOstqvmFsdNEEQfHoZ6vm6E9GK2OrF6DSJSpIbRbi+Nn0WDPID9O7xB2Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+  {% block head %}{% endblock %}
+</head>
+
+<!-- 
+bool active
+bool dashboard
+bool report
+bool story
+bool deactivate
+bool ml
+bool generatetoken
+bool activateaccount
+list(String) toasts
+list(String) toastdata
+-->
+
+<body>
+  <nav class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top" id="the-nav">
+    <div class="container-fluid">
+      <a class="navbar-brand brand" href="/home">GlobalSalesData</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse nav-item-set" id="navbarNavDropdown">
+        <ul class="navbar-nav items-container">
+          {% if active %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{deploy_url}}/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{deploy_url}}/report">Report</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{deploy_url}}/story">Story</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{deploy_url}}/ml">Machine Learning</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link link-danger" href="{{deploy_url}}/deactivate">Deactivate</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{deploy_url}}/generatetoken">Generate Token</a>
+          </li>
+          <li class="nav-item"><a class="nav-link"href="{{deploy_url}}/activateacc"">Activate Account</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% if toasts!=None %}
+  {% for i in range(toasts|length): %}
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-{{toasts[i]}} border-0" role="alert" aria-live="assertive"
+      aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          {{toastdata[i]}}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+          aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+
+  {% block body %}{% endblock %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/js/bootstrap.bundle.min.js"
+    integrity="sha512-9GacT4119eY3AcosfWtHMsT5JyZudrexyEVzTBWV3viP/YfB9e2pEy3N7WXL3SV6ASXpTU0vzzSxsbfsuUH4sQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+    </script>
+<script>
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+  function myFunction(x) {
+    if (x.matches) { // If media query matches
+      document.getElementById('the-nav').className = 'navbar navbar-dark navbar-expand-lg bg-dark fixed-bottom'; for (a
+        in document.getElementsByClassName('img-fluid rounded-start')) { a.className = "card-img-top img-card" }
+    }
+    else {
+      document.getElementById('the-nav').className = 'navbar navbar-dark navbar-expand-lg bg-dark fixed-top'; for
+        (a in document.getElementsByClassName('card-img-top')) { a.className = "img-fluid rounded-start img-card" }
+    }
+  } var x = window.matchMedia("(max-width: 992px)"); myFunction(x); x.addListener(myFunction); </script>
+</body>
+<script>
+  const toasts = document.getElementsByClassName('toast')
+  for (i = 0; i < toasts.length; i++) {
+    let elem = toasts.item(i)
+    let elem_tost = new bootstrap.Toast(elem)
+    elem_tost.show()
+  }
+</script>
+
+</html>
