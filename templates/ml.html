@@ -7,22 +7,156 @@
 
 {% block body %}
 <div class="main-container">
-  <div class="sub-container quote m-3">
-    <h3>Programmer Jokes API</h3>
-    <p id="joke">
-      
-    </p>
+  <div>
+    <div id="input_div" style="margin-top:60px;color: white;">
+    </div>
+    <div class="sub-container quote m-3">
+      <h3>Programmer Jokes API</h3>
+      <p id="joke">
+      </p>
+    </div>
+    <div id="prio">
+    </div>
   </div>
+  
 </div>
 <script>
   async function joke() {
     await fetch("https://v2.jokeapi.dev/joke/Programming?blacklistFlags=nsfw,religious,political,racist,sexist,explicit&type=single", {
       method: "GET",
-    }).then(async (res) => { 
-      let t= await res.json();
-      document.getElementById('joke').innerHTML=t.joke
+    }).then(async (res) => {
+      let t = await res.json();
+      document.getElementById('joke').innerHTML = t.joke
     }).catch((err) => { console.log(err) })
   }
-  joke();
+  async function renderInputs() {
+    await fetch("{{deploy_url}}/mljson", { method: "GET" })
+      .then(async (res) => {
+        var response_data = await res.json()
+        var inputDiv = document.getElementById("input_div")
+        var headings = Object.keys(response_data)
+        for (var i = 0; i < headings.length; i++) {
+          var x = () => {
+            var out = ""
+            var strings = headings[i].split(" ")
+            for (var j = 0; j < strings.length; j++) {
+              out += strings[j]
+            }
+            return out
+          }
+          inputDiv.append(
+            createSelect(
+              headings[i],
+              x(),
+              Object.keys(response_data[headings[i]]),
+              Object.values(response_data[headings[i]])
+            )
+          )
+        }
+
+        inputDiv.innerHTML += `
+          <div>
+            <label for="Sales" class="form-label">Sales</label>
+            <input type="number" name="Sales" class="form-control" id="Sales" placeholder="Enter Sales" />
+          </div>
+          <div>
+            <label for="Quantity" class="form-label">Quantity</label>
+            <input type="number" name="Quantity" class="form-control" id="Quantity" placeholder="Enter Quantity" />
+          </div>
+          <div>
+            <label for="Discount" class="form-label">Discount</label>
+            <input type="number" name="Discount" class="form-control" id="Discount" placeholder="Enter Discount" />
+          </div>
+          <div>
+            <label for="Profit" class="form-label">Profit</label>
+            <input type="number" name="Profit" class="form-control" id="Profit" placeholder="Enter Profit" />
+          </div>
+          <div>
+            <label for="ShippingCost" class="form-label">Shipping Cost</label>
+            <input type="number" name="ShippingCost" class="form-control" id="ShippingCost"
+              placeholder="Enter Shipping Cost" />
+          </div>
+          <div>
+            <label for="ItemValue" class="form-label">Item Value</label>
+            <input type="number" name="ItemValue" class="form-control" id="ItemValue" placeholder="Enter Item Value" />
+          </div>
+          <div>
+            <button class="btn btn-dark butt shadow-none mt-2" onclick=findPriority()>
+              Find Priority
+            </button>  
+          </div>
+        `
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+  function createSelect(name, id, options, values) {
+    var container = document.createElement("div")
+    var select = document.createElement("select")
+    select.setAttribute("name", name)
+    select.setAttribute("id", id)
+    select.setAttribute("class", "form-select")
+    for (var i = 0; i < options.length; i++) {
+      var option = document.createElement("option")
+      option.setAttribute("value", values[i])
+      option.innerText = options[i]
+      if (i == 0) {
+        option.selected = true
+      }
+      select.append(option)
+    }
+    var label = document.createElement("label")
+    label.setAttribute("for", name)
+    label.className = "form-label"
+    label.innerText = name
+    container.append(label)
+    container.append(select)
+    return container
+  }
+  async function findPriority() {
+    var col_name = ['Ship Mode', 'Segment', 'City', 'State', 'Country', 'Market', 'Region',
+      'Category', 'Sub-Category', 'Product Name', 'Sales', 'Quantity',
+      'Discount', 'Profit', 'Shipping Cost', 'Item Value']
+    var form_data = new FormData()
+    var final_data = {}
+    for (var i = 0; i < col_name.length; i++) {
+      var x = () => {
+        var out = ""
+        var strings = col_name[i].split(" ")
+        for (var j = 0; j < strings.length; j++) {
+          out += strings[j]
+        }
+        return out
+      }
+      form_data.append(col_name[i], Number(document.getElementById(x()).value))
+      final_data[col_name[i]] = Number(document.getElementById(x()).value)
+    }
+    await fetch("{{deploy_url}}/ml-evaluate", { method: "POST", body: JSON.stringify(final_data), headers: new Headers({ 'content-type': 'application/json' }) })
+      .then(async (res) => {
+        let t=await res.json()
+        let pri=await t.accuracy
+        let priority=""
+        if(pri==0){
+          priority="Critical"
+        }else if(pri==1){
+          priority="Medium"
+        }else if(pri==2){
+          priority="High"
+        }else if(pri==3){
+          priority="Low"
+        }
+        document.getElementById('prio').innerHTML=`<div class="sub-container quote m-3" >
+      <h3>Priority</h3>
+      <h2>`+priority+`</h2>
+    </div>`
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+  renderInputs()
+  joke()
+  
 </script>
 {% endblock %}

@@ -11,6 +11,8 @@ wheel = "*"
 cryptography = "*"
 python-dotenv = "*"
 requests = "*"
+scikit-learn = "*"
+pandas = "*"
 
 [dev-packages]
 

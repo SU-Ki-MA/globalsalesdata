@@ -1,9 +1,16 @@
+
 .sub-container {
-  width: auto;
+  width: fit-content;
   border-radius: 0.5rem;
   background-color: white;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.butt {
+  background-color: #00ADB5;
+  width: 13rem;
+  align-self: center;
 }
