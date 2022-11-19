@@ -13,6 +13,7 @@ python-dotenv = "*"
 requests = "*"
 scikit-learn = "*"
 pandas = "*"
+locust = "*"
 
 [dev-packages]
 
